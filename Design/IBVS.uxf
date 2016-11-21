@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>220</x>
+      <y>10</y>
+      <w>360</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>/Environment/
+--
+-Controller -CameraParam -Features -CirObs 
+--
+SetController(Controller)
+SetCirObs(X1_cir_obs)
+I1_f = World2ImgCord(X1_cam, X1_f)
+I1_cir_obs = GetCirObsInImg(X1_cam, X1_cir_obs)
+X1_cam = Img2World(I_f)
+--
+/X_bar_dot = Dynamics(t,X_bar)/
+/I_bar_dot = ImgDynamics(t,I_bar)/
+/J1,J1_dot = GetJ1(X_cam, X1_f)/
+/f,g = Getfg(I)/
+/X_bar_cam = GetXBarCam(X_bar_f)/
+/X_bar_d = TrajGen(t)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>280</x>
+      <y>400</y>
+      <w>260</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>Notations
+--
+bg=blue
+X1 = (x,y,z) cord of 1 pnt
+X = (x1,y1,z1,..,xn,yn,zn) cord of n pnts
+X1_bar = (x,y,z,x_dot,y_dot,z_dot)
+X_bar = (x1,y1,..,yn_dot,zn_dot)
+X1_cir_obs = (x1,y1,z1,r1)
+I1 = (u,v) cord in image space
+I1_cir_obs = (u1, v1, r1)
+J1 : X1 -&gt; I1
+J1_dot : X1_dot -&gt; I1_dot
+J : X -&gt; I
+J_dot : X_dot -&gt; I_dot</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>10</x>
+      <y>20</y>
+      <w>180</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>/Controller/
+--
+Environment
+--
+/u = GetU(X_bar_d, X_bar)/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>0</x>
+      <y>390</y>
+      <w>190</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Acronyms
+--
+bg=blue
+cir_obs = circular obstacle
+f = feature
+cam = camera</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
