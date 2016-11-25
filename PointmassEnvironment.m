@@ -27,7 +27,7 @@ classdef PointmassEnvironment < Environment
             I_bar = obj.World2Img(X_bar_cam);
             U = obj.Controller.GetU(I_bar_d, I_bar, X_bar_cam);
             X_bar_dot_cam = [X_bar_cam(4:6); U(1:3)/obj.m];
-            %disp(t);
+            disp(t);
         end
         
         function I_bar_dot = ImgDynamics(t,I_bar)        
@@ -63,10 +63,11 @@ classdef PointmassEnvironment < Environment
         function [X_bar_d] = TrajGen(obj, t)
 %             A = 0.5;
 %             X_d = A*[cos(t) sin(t) 1+t/k -sin(t) cos(t) 1/k]';
-            X_bar_d = [5 5 10 0 0 0]';
+            X_bar_d = [0.5 0.5 5 0 0 0]';
         end    
         
-        function plot(obj, t, X)
+        % animate speed = between [0,1]
+        function plot(obj, t, X, animation_speed)
             X_d = arrayfun(@obj.TrajGen, t, 'UniformOutput', false);
             I_d = cellfun(@obj.World2Img,X_d,'UniformOutput', false);
             I_d = cell2mat(I_d);
@@ -102,6 +103,21 @@ classdef PointmassEnvironment < Environment
             xlabel('Time');
             ylabel('X_E_r_r_o_r');
             legend('x','y','z'); 
+            
+            figure;
+            % Draw Obstacles
+%             [xs,ys,zs] = sphere();
+%             xs = xs*obj.X1_cir_obs(4) + obj.X1_cir_obs(1);
+%             ys = ys*obj.X1_cir_obs(4) + obj.X1_cir_obs(2);
+%             zs = zs*obj.X1_cir_obs(4) + obj.X1_cir_obs(3);
+%             surf(xs,ys,zs,'EdgeColor','none');
+%             hold on;
+            % Draw Features
+            for i=1:size(obj.X_f,2)
+                plot3(obj.X_f(1,i),obj.X_f(2,i),obj.X_f(3,i),'r*');
+                hold on;
+            end
+            plot3(X(:,1),X(:,2),X(:,3));
         end
     end
 end

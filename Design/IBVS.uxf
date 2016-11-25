@@ -5,9 +5,9 @@
     <id>UMLClass</id>
     <coordinates>
       <x>220</x>
-      <y>10</y>
+      <y>20</y>
       <w>360</w>
-      <h>240</h>
+      <h>270</h>
     </coordinates>
     <panel_attributes>/Environment/
 --
@@ -18,6 +18,8 @@ SetCirObs(X1_cir_obs)
 I1_f = World2ImgCord(X1_cam, X1_f)
 I1_cir_obs = GetCirObsInImg(X1_cam, X1_cir_obs)
 X1_cam = Img2World(I_f)
+Animate(t,X)
+Plot(t,X)
 --
 /X_bar_dot = Dynamics(t,X_bar)/
 /I_bar_dot = ImgDynamics(t,I_bar)/

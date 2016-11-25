@@ -3,7 +3,7 @@ classdef Environment
         EnvironmentName;
         Controller;
         X1_cir_obs;
-        fx=350; fy=350; cx=0; cy=0; xf1=0.1; yf1=0; xf2=-0.1; yf2=-0.1; 
+        fx=1045.83; fy=1045.83; cx=514.41; cy=357.50; xf1=0.1; yf1=0; xf2=-0.1; yf2=-0.1; 
         X_f;
     end
     
@@ -32,13 +32,15 @@ classdef Environment
             I1_f =  [u1; v1];
         end
 
-        function I1_cir_obs = GetCirObsInImg(obj, X1_cam, X1_cir_obs)
-            center = obj.World2ImgCord(X1_cam,X1_cir_obs(1:3));
-            border = obj.World2ImgCord(X1_cam,[X1_cir_obs(1)+X1_cir_obs(4);
+        function I1_cir_obs_bar = GetCirObsInImg(obj, X1_bar_cam, X1_cir_obs)
+            center = obj.World2ImgCord(X1_bar_cam(1:3),X1_cir_obs(1:3));
+            border = obj.World2ImgCord(X1_bar_cam(1:3),[X1_cir_obs(1)+X1_cir_obs(4);
                                                X1_cir_obs(2);
                                                X1_cir_obs(3)]);
             r0 = norm(center-border);
-            I1_cir_obs = [center; r0];
+            [J1, ~]= obj.GetJ1(X1_bar_cam, X1_cir_obs(1:3));
+            I1_cir_obs_vel = J1*X1_bar_cam(4:6);
+            I1_cir_obs_bar = [center; r0; I1_cir_obs_vel];
         end
         
         function X1_cam = Img2World(obj, I_f)
