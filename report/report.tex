@@ -1,0 +1,134 @@
+\documentclass{paper}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+
+\usetikzlibrary{arrows,positioning} 
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    %Define style for boxes
+    punkt/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           text width=6.5em,
+           minimum height=2em,
+           text centered},
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt,}
+}
+
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+\title{Image Based Visual Servoing with Obstacle Avoidance for Quadrotors}
+\author{Rohan Thakker, Dr. Koushil Sreenath }
+
+\begin{document}
+
+\maketitle
+\section{Model}
+\begin{center}
+\begin{tikzpicture}
+
+% Draw World Frame
+\coordinate (w) at (0,0,0);
+\def \L {1} % Length of arrows
+\draw[red, ,->] (w) -- (\L,0,0) node[anchor=south]{$x_{w}$};
+\draw[red, ,->] (w) -- (0,0,\L) node[anchor=south east]{$y_{w}$};
+\draw[red, ,->] (w) -- (0,-\L,0) node[anchor=west]{$z_{w}$};
+
+% Draw Body Frame
+\def \H {4}
+\coordinate (c) at (0,\H,0);
+\draw[blue, ,->] (c) -- (\L,\H,0) node[anchor=north]{$x_{c}$};
+\draw[blue, ,->] (c) -- (0,\H,\L) node[anchor=north]{$y_{c}$};
+\draw[blue, ,->] (c) -- (0,\H-\L,0) node[anchor=west]{$z_{c}$};
+
+% Draw Transformation 
+\draw[black, ->] (w) .. controls +(up:0mm) and +(left:5cm) .. node[right] {${}^wT_{c}$} (c);
+
+% Draw Features
+\draw [fill=green](-1.5,0,0) circle (1.5pt) node[anchor=north]{$X_{f_{1}}$};
+\draw [fill=green](1.5,0,0) circle (1.5pt) node[anchor=north]{$X_{f_{2}}$};
+
+\end{tikzpicture}
+\end{center}
+
+\subsection{Camera Model}
+\begin{gather}
+% %\begin{array} u\\v\\1 \end{array} = K\inv{T} \\
+\lambda\begin{bmatrix} u_{i}\\v_{i}\\1 \end{bmatrix}
+= K{{}^{w}T_{c}}^{-1}\begin{bmatrix} x_{f_{i}}\\y_{f_{i}}\\z_{f_{i}}\\1 \end{bmatrix} \\
+{{}^{w}T_{c}} = {{}^{w}T_{b}} {{}^{b}T_{c}}
+\end{gather}
+w = world frame, b = body frame, c = camera frame
+
+Position of i\textsuperscript{th} feature in world frame
+${}^{w}X_{f_{i}} = X_{f_{i}} = 
+\begin{bmatrix} x_{f_{i}}\\y_{f_{i}}\\z_{f_{i}}\\1 \end{bmatrix}$\\
+
+Image Cordinates of i\textsuperscript{th} feature
+$I_{i} =\begin{bmatrix} u_{i}\\v_{i} \end{bmatrix} $\\
+
+Intrinsic Camera Calibration  Matrix 
+$K = \begin{bmatrix} f_{x} & 0 & c_{x} \\ 0 & f_{y} & c_{y}\\ 0 & 0 & 1  \end{bmatrix} $\\
+
+Position of Quadrotor in World Frame = X
+\subsection{Pointmass Dynamics}
+
+\subsubsection{World}
+\begin{gather}
+\ddot{x} = u
+\end{gather}
+
+\subsubsection{Image}
+Assuming ${}^{w}T_{c} = {}^{w}T_{b}$ 
+\begin{gather}
+\begin{bmatrix} u_{i}^{'}\\v_{i}^{'}\\w_{i}^{'} \end{bmatrix} = K\begin{bmatrix} \mbox{I}&\begin{matrix} -x\\-y\\-z \end{matrix}\end{bmatrix}\begin{bmatrix} x_{f_{i}}\\y_{f_{i}}\\z_{f_{i}}\\1 \end{bmatrix} \\
+u_{i} = u_{i}^{'}/w_{i}^{'}, \hspace*{5mm} v_{i}=v_{i}^{'}/w_{i}^{'}\\
+\dot{I_{i}} = J_{i} \dot{X},\hspace*{5mm}
+\begin{bmatrix} \dot{u_{i}}\\\dot{v_{i}} \end{bmatrix} = J_{i}\begin{bmatrix} \dot{x}\\\dot{y}\\\dot{z}\end{bmatrix},\hspace*{5mm}
+J_{i} = \frac{dI_{f{i}}}{dX} \\
+\ddot{I_{i}} = \dot{J_{i}}\dot{X} + J_{i}\ddot{X} = \dot{J_{i}}J_{i}^{-1}\dot{I} + J_{i} u\\
+\dot{\bar{I}} = \begin{bmatrix} 0 & I \\ 0 & \dot{J}J^{-1}\end{bmatrix}\dot{\bar{I}} + \begin{bmatrix} 0\\J\end{bmatrix}u,\hspace*{5mm}
+\bar{I} = \begin{bmatrix}u_{1}\\ v_{1}\\\vdots\\ \dot{u_{n}}\\\dot{v_{n}} \end{bmatrix}
+\end{gather}
+
+\subsection{Quadrotor Dynamics}
+\subsubsection{World}
+\begin{gather}
+m\ddot{x} = mge_{3} - fRe_{3} \\
+\dot{R} = R\hat{\Omega} \\
+J\dot{\Omega} + \Omega \times J\Omega = M 
+\end{gather}
+\subsubsection{Image}
+Assuming ${}^{w}T_{c} = {}^{w}T_{b}$. Using equations 4-6:
+\begin{gather}
+\ddot{I_{i}} = \dot{J_{i}}\dot{X} + J_{i}\ddot{X} = \dot{J_{i}}J_{i}^{-1}\dot{I} + J_{i} (ge_{3}-fRe_{3})\\
+\ddot{I_{i}} = \dot{J_{i}}J_{i}^{-1}\dot{I} + J_{i}ge_{3} + J_{i}u, \hspace*{5mm}
+u = -fRe_{3}
+\end{gather}
+\subsection{Questions}
+\begin{itemize}
+\item Is this reasonable? How can we gaurentee smoothness of control input?
+\item How do  we gaurentee feasibility of the CLF-CBF?
+\item In general, cascaded controllers are used for higher order systems?
+\item How to find ${}^bT_{c}$?
+\end{itemize}
+
+\subsection{Non-Linear Control}
+\subsubsection{CLF}
+\subsubsection{CBF}
+
+\end{document}
