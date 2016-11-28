@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.2">
+<diagram program="umlet" version="14.1.1">
   <zoom_level>10</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>220</x>
+      <x>310</x>
       <y>20</y>
       <w>360</w>
       <h>270</h>
@@ -32,7 +32,7 @@ Plot(t,X)
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>280</x>
+      <x>290</x>
       <y>400</y>
       <w>260</w>
       <h>210</h>
@@ -56,7 +56,7 @@ J_dot : X_dot -&gt; I_dot</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>10</x>
+      <x>70</x>
       <y>20</y>
       <w>180</w>
       <h>70</h>
@@ -65,14 +65,14 @@ J_dot : X_dot -&gt; I_dot</panel_attributes>
 --
 Environment
 --
-/u = GetU(X_bar_d, X_bar)/
+/u = GetU(I_bar_d, I_bar)/
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>0</x>
+      <x>10</x>
       <y>390</y>
       <w>190</w>
       <h>90</h>

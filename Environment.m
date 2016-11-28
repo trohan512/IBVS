@@ -2,13 +2,15 @@ classdef Environment
     properties
         EnvironmentName;
         Controller;
-        X1_cir_obs;
-        fx=1045.83; fy=1045.83; cx=514.41; cy=357.50; xf1=0.1; yf1=0; xf2=-0.1; yf2=-0.1; 
-        X_f;
+        X1_cir_obs; % [X0,Y0,Z0,R0]' in world
+        fx=1045.83; fy=1045.83; cx=514.41; cy=357.50; 
+        % X_f = [Xf1, Xf2, ...] 3-D cordinates of feature in the world
+        X_f = [0.1, -0.1;
+                 0, -0.1;
+                 0,   0];
     end
     
     methods
-        
         function obj = SetController(obj, Controller)
             obj.Controller = Controller;
         end
@@ -44,6 +46,60 @@ classdef Environment
         end
         
         function X1_cam = Img2World(obj, I_f)
+        end
+        
+                % animate speed = between [0,1]
+        function plot(obj, t, X, animation_speed)
+            X_d = arrayfun(@obj.TrajGen, t, 'UniformOutput', false);
+            I_d = cellfun(@obj.World2Img,X_d,'UniformOutput', false);
+            I_d = cell2mat(I_d);
+            X_d = cell2mat(X_d);
+            X_d = reshape(X_d,6,size(X_d,1)/6)';
+            I_d = reshape(I_d,8,numel(I_d)/8)';
+            I = cellfun(@obj.World2Img, num2cell(X',1), 'UniformOutput', false);
+            I = cell2mat(I)';
+            subplot(2,2,1);
+            plot(t, I_d(:,1:3),'--')
+            hold on;
+            plot(t, I(:,1:3))
+            hold off;
+            xlabel('Time');
+            ylabel('I');
+            legend('u1','v1','u2');
+            subplot(2,2,2);
+            plot(t, I_d(:,1:3)-I(:,1:3));
+            xlabel('Time');
+            ylabel('I_E_r_r_o_r');
+            legend('u1','v1','u2');
+
+            subplot(2,2,3);
+            plot(t, X_d(:,1:3),'--')
+            hold on;
+            plot(t, X(:,1:3))
+            hold off;
+            xlabel('Time');
+            ylabel('X');
+            legend('x','y','z');
+            subplot(2,2,4);
+            plot(t, X_d(:,1:3)-X(:,1:3));
+            xlabel('Time');
+            ylabel('X_E_r_r_o_r');
+            legend('x','y','z'); 
+            
+            figure;
+            % Draw Obstacles
+%             [xs,ys,zs] = sphere();
+%             xs = xs*obj.X1_cir_obs(4) + obj.X1_cir_obs(1);
+%             ys = ys*obj.X1_cir_obs(4) + obj.X1_cir_obs(2);
+%             zs = zs*obj.X1_cir_obs(4) + obj.X1_cir_obs(3);
+%             surf(xs,ys,zs,'EdgeColor','none');
+%             hold on;
+            % Draw Features
+            for i=1:size(obj.X_f,2)
+                plot3(obj.X_f(1,i),obj.X_f(2,i),obj.X_f(3,i),'r*');
+                hold on;
+            end
+            plot3(X(:,1),X(:,2),X(:,3));
         end
     end
     methods (Abstract)

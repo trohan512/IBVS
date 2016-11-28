@@ -7,12 +7,12 @@ classdef CLFController < Controller
         function obj = CLFController(Environment)
             obj.ControllerName = 'CLF';
             obj.Environment = Environment;
-            obj.P = [    1.0124   -0.0000   -0.0104    0.0126    0.0000   -0.0105
-                -0.0000    1.0033   -0.0000   -0.0000    0.0033    0.0000
-                -0.0104   -0.0000    1.0124   -0.0105   -0.0000    0.0126
-                0.0126   -0.0000   -0.0105    0.0128    0.0000   -0.0108
-                0.0000    0.0033   -0.0000    0.0000    0.0033   -0.0000
-                -0.0105    0.0000    0.0126   -0.0108   -0.0000    0.0128];
+%             obj.P = [    1.0124   -0.0000   -0.0104    0.0126    0.0000   -0.0105
+%                 -0.0000    1.0033   -0.0000   -0.0000    0.0033    0.0000
+%                 -0.0104   -0.0000    1.0124   -0.0105   -0.0000    0.0126
+%                 0.0126   -0.0000   -0.0105    0.0128    0.0000   -0.0108
+%                 0.0000    0.0033   -0.0000    0.0000    0.0033   -0.0000
+%                 -0.0105    0.0000    0.0126   -0.0108   -0.0000    0.0128];
         end
         
         function u = GetU(obj, I_bar_d, I_bar, X_bar_cam)
@@ -28,7 +28,6 @@ classdef CLFController < Controller
             dV_dx = 2*obj.P*(I_sub_bar-I_sub_bar_d);
             LfV = dV_dx'*f_sub;
             LgV = dV_dx'*g_sub;
-            
             % For all images features
 %             V = (I_bar-I_bar_d)'*obj.P*(I_bar-I_bar_d);
 %             dV_dx = 2*obj.P*(I_bar-I_bar_d);
