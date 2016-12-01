@@ -89,7 +89,7 @@ Position of Quadrotor in World Frame = X
 
 \subsubsection{World}
 \begin{gather}
-\ddot{x} = u
+\ddot{x} = \frac{u}{m} + g\vec{e_3}
 \end{gather}
 
 \subsubsection{Image}
@@ -100,8 +100,8 @@ u_{i} = u_{i}^{'}/w_{i}^{'}, \hspace*{5mm} v_{i}=v_{i}^{'}/w_{i}^{'}\\
 \dot{I_{i}} = J_{i} \dot{X},\hspace*{5mm}
 \begin{bmatrix} \dot{u_{i}}\\\dot{v_{i}} \end{bmatrix} = J_{i}\begin{bmatrix} \dot{x}\\\dot{y}\\\dot{z}\end{bmatrix},\hspace*{5mm}
 J_{i} = \frac{dI_{f{i}}}{dX} \\
-\ddot{I_{i}} = \dot{J_{i}}\dot{X} + J_{i}\ddot{X} = \dot{J_{i}}J_{i}^{-1}\dot{I} + J_{i} u\\
-\dot{\bar{I}} = \begin{bmatrix} 0 & I \\ 0 & \dot{J}J^{-1}\end{bmatrix}\dot{\bar{I}} + \begin{bmatrix} 0\\J\end{bmatrix}u,\hspace*{5mm}
+\ddot{I_{i}} = \dot{J_{i}}\dot{X} + J_{i}\ddot{X} = \dot{J_{i}}J_{i}^{-1}\dot{I} + J_{i} (\frac{u}{m}+g\vec{e}_3)\\
+\dot{\bar{I}} = \begin{bmatrix} 0 & I \\ 0 & \dot{J}J^{-1}\end{bmatrix}\dot{\bar{I}} + \begin{bmatrix} 0\\J\end{bmatrix}(\frac{u}{m}+g\vec{e}_3),\hspace*{5mm}
 \bar{I} = \begin{bmatrix}u_{1}\\ v_{1}\\\vdots\\ \dot{u_{n}}\\\dot{v_{n}} \end{bmatrix}
 \end{gather}
 

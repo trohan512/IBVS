@@ -38,6 +38,8 @@ classdef CLFController < Controller
             b = -LfV - gamma*V;
             A = LgV;
             u = quadprog(eye(3),[0;0;0],A,b);
+            % add gravity feedforward
+            u = u + [0; 0; obj.Environment.m * obj.Environment.g];
             disp(sum(abs(I_bar-I_bar_d)));
         end
         

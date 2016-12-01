@@ -10,14 +10,22 @@
 % J = Intertia Matrix (3x3) kg-m^2
 % g = graviational acc m/s^2
 function [u] = geometric_controller_CLF(y_d, y_dot_d, y_dot_dot_d, x, m, J, g)
+global env;
+X_bar_d = [y_d(1:3); y_dot_d(1:3)];
+X_bar_cam = [x(1:3); x(13:15)];
+I_bar_d = env.World2Img(X_bar_d);
+I_bar = env.World2Img(X_bar_cam);
+U = env.Controller.GetU(I_bar_d, I_bar, X_bar_cam);
+
 k_x = 15*5;
 k_v = 15.6;
 k_R = 8.81*5;
 k_omega = 2.54;
 % force in world frame
-%f_w = (k_x*(x(1:3)-y_d(1:3)) + k_v*(x(13:15)-y_dot_d(1:3)) + (m*g*[0 0 1]') - m*y_dot_dot_d(1:3)); % 
+% f_w = (k_x*(x(1:3)-y_d(1:3)) + k_v*(x(13:15)-y_dot_d(1:3)) + (m*g*[0 0 1]') - m*y_dot_dot_d(1:3)); % 
+f_w = U - m*y_dot_dot_d(1:3);
 % Get Force From CLF
-f_w = clf_qp();
+% f_w = clf_qp();
 R = [x(4:6)';
      x(7:9)';
      x(10:12)'];
@@ -34,7 +42,7 @@ omega_hat = [0        -omega(3)  omega(2);
             omega(3)     0     -omega(1);
             -omega(2)  omega(1)    0];
 e_omega = omega - R'*R_c*omega_c;
-%M_t1 = -k_R*e_R - k_omega*e_omega + cross(omega_t1,J*omega_t1) - J*(cross(omega_t1,R_t1')*R_c(:,:,2)*omega_c_t1 - R_t1'*R_c(:,:,2)*Omega_c_dot_t1);
+% M_t1 = -k_R*e_R - k_omega*e_omega + cross(omega_t1,J*omega_t1) - J*(cross(omega_t1,R_t1')*R_c(:,:,2)*omega_c_t1 - R_t1'*R_c(:,:,2)*Omega_c_dot_t1);
 M = -k_R*e_R - k_omega*e_omega + cross(omega,J*omega) - J*(omega_hat*R'*R_c*omega_c);
 u = [f; M];
 

@@ -1,13 +1,21 @@
 function QuadrotorIBVS
 sim_time = 50;
-
+addpath('..');
 iniCon = zeros(18,1);
-iniCon(1)=0;
-iniCon(2)=0;
-iniCon(3)=0;
+iniCon(1)=-0.5;
+iniCon(2)=-0.5;
+iniCon(3)=4;
 iniCon(4)= 1;
 iniCon(8)= -1;
 iniCon(12)= -1;
+
+% Setup Pointmass CLF
+global env;
+env = PointmassEnvironment;
+env = env.SetCirObs([0.1,-0.05,2,0.1]');   
+controller = CLFController(env);
+env = env.SetController(controller);
+
 
 % iniYaw = 0;
 % iniPitch = -pi/2;
@@ -20,7 +28,7 @@ iniCon(12)= -1;
 % HB Pysical properties source: http://wiki.asctec.de/display/AR/CAD+Models
 g = 9.81;
 % m = 0.53057; % HB
-m = 4.34;
+m = 1;
 
 % ( kilograms * square meters )
 %J = [0.00367556974  0.00000426367  -0.00005668247; % HB
@@ -55,9 +63,9 @@ plot_graphs(t,y);
     dx(4:6) = R_dot(1,1:3); dx(7:9) = R_dot(2,1:3); dx(10:12) = R_dot(3,1:3);
 
     % compute u
-    %[y_d, y_dot_d, y_dot_dot_d] =  trajGenerator_fixedPoint();
-    [y_d, y_dot_d, y_dot_dot_d] =  trajGenerator_sinePath(t);
-    [u] = geometric_controller_ff(y_d, y_dot_d, y_dot_dot_d, x, m, J, g);
+    [y_d, y_dot_d, y_dot_dot_d] =  trajGenerator_fixedPoint();
+%     [y_d, y_dot_d, y_dot_dot_d] =  trajGenerator_sinePath(t);
+    [u] = geometric_controller_CLF(y_d, y_dot_d, y_dot_dot_d, x, m, J, g);
     %u=zeros(4,1);
 
     % Linear Acceleration
@@ -70,9 +78,10 @@ plot_graphs(t,y);
     end
 
     function[y_d, y_dot_d, y_dot_dot_d] = trajGenerator_fixedPoint()
-    x_d = 1;  % position in m
-    y_d = 1;
-    z_d = 0.5;
+%     x_d = 1;  % position in m
+%     y_d = 1;
+%     z_d = 0.5;
+    x_d = 0.5; y_d = 0.5; z_d = 5;
     yaw_d = 0;  
     y_d = [x_d; y_d; z_d; yaw_d];
     y_dot_d = zeros(size(y_d));

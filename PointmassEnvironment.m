@@ -1,6 +1,6 @@
 classdef PointmassEnvironment < Environment
     properties
-        m=1;
+        m=1; g=9.81;
     end
     methods
         function obj = PointmassEnvironment()
@@ -22,7 +22,7 @@ classdef PointmassEnvironment < Environment
             I_bar_d = obj.World2Img(X_bar_d);
             I_bar = obj.World2Img(X_bar_cam);
             U = obj.Controller.GetU(I_bar_d, I_bar, X_bar_cam);
-            X_bar_dot_cam = [X_bar_cam(4:6); U(1:3)/obj.m];
+            X_bar_dot_cam = [X_bar_cam(4:6); U(1:3)/obj.m + [0;0;-obj.g]];
             disp(t);
         end
         
